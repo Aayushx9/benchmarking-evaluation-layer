@@ -1,0 +1,9 @@
+# AGENTS.md
+
+- Stack: Python 3.12 + pandas + pytest (stdlib-only LLM client via urllib). Evaluator lives in `src/evaluator/` + `evaluate.py`. No DB, auth, or frontend.
+- Python quirk: `python`/`py` resolve to Store stubs. Use `& "C:\Users\Aayush\AppData\Local\Programs\Python\Python312\python.exe"` for all runs.
+- Commands: `...python.exe -m pip install -r requirements.txt`, `...python.exe -m pytest -q`, `...python.exe run_agent.py <csv> "<question>"`, `...python.exe evaluate.py <trace.json> [--out-dir evaluations]`.
+- Architecture: `src/inspector.py` (schema) -> `src/llm_backend.py` (LLM reason+code, None when no `OPENAI_API_KEY`) -> `src/reasoner.py` (offline synonym/intent fallback) -> `src/codegen.py` (dynamic pandas builder, sets `result`) -> `src/executor.py` (AST blocklist + restricted builtins) -> `src/agent.py` (answer only from result) -> `src/trace.py` (JSON to `traces/`). `src/planner.py` is legacy, do not extend. Entry points: `run_agent.py`, `DataAnalysisAgent.ask(csv, question)`.
+- Intents: `rank | aggregate | count | relationship(correlation) | compare_multi | difficulty | outliers | describe`. Legacy `analysis_type` key is preserved for old tests.
+- Evaluator (`src/evaluator/`, entry `evaluate.py`, tests `tests/test_evaluator.py`) is separate from the agent: `checks.py` deterministic (numbers, grounding) + `llm_judge.py` overlay for method/completeness/hallucination only when `OPENAI_API_KEY` set. `evaluate_trace()` is pure; `evaluate_trace_file()` writes `evaluations/eval_<trace_id>.json`. Overall = mean of 5 dims; pass = overall >= 0.7 and numerical/hallucination >= 0.5.
+- Traces in `traces/trace_*.json` are the contract for the future evaluation layer — keep new keys `question, dataset_schema, reasoning, analysis_plan, generated_code, execution_result, final_answer, numerical_evidence, errors` plus legacy aliases `csv_path, inspection, plan, code_used, result, answer, evidence, error`.
