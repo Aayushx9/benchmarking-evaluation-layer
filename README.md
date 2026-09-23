@@ -3,6 +3,8 @@
 CSV + question -> answer + evidence + JSON trace, then trace -> scored evaluation.
 No auth, DB, or frontend.
 
+The first working miniature of the system - The data-analysis agent accepts a CSV and natural-language questions, performs pandas-based analysis, produces an answer with numerical evidence and records a structured trace. I've then added an evaluation layer that evaluates those traces across numerical correctness, data grounding, method correctness, completeness and hallucination. The next step is to deliberately introduce controlled errors into agent outputs and test whether the evaluator consistently detects them.
+
 ## Setup
 
 Full-path Python is used because `python` resolves to a Store stub on this machine:
