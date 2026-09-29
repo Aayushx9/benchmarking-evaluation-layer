@@ -3,8 +3,6 @@
 CSV + question -> answer + evidence + JSON trace, then trace -> scored evaluation.
 No auth, DB, or frontend.
 
-The first working miniature of the system - The data-analysis agent accepts a CSV and natural-language questions, performs pandas-based analysis, produces an answer with numerical evidence and records a structured trace. I've then added an evaluation layer that evaluates those traces across numerical correctness, data grounding, method correctness, completeness and hallucination. The next step is to deliberately introduce controlled errors into agent outputs and test whether the evaluator consistently detects them.
-
 ## Setup
 
 Full-path Python is used because `python` resolves to a Store stub on this machine:
@@ -51,6 +49,26 @@ Traces land in `traces/trace_*.json`. Evaluations land in
 & "C:\Users\Aayush\AppData\Local\Programs\Python\Python312\python.exe" evaluate.py traces/trace_20260923T043041407326.json
 # multiple files: evaluate.py <trace1> <trace2> [--out-dir evaluations]
 ```
+
+## Benchmark the evaluator itself
+
+The benchmark tests the **Evaluation Layer**, not the agent: 8 controlled cases
+in `benchmark/cases.json`, each built from a known-correct trace with exactly
+one documented error injected (wrong number, wrong method, incomplete answer,
+hallucinated column, unsupported claim, verbose-but-correct control, and a
+multi-error case). Each case carries ground-truth labels for all five evaluator
+dimensions plus expected pass/fail.
+
+```powershell
+& "C:\Users\Aayush\AppData\Local\Programs\Python\Python312\python.exe" benchmark/runner.py
+```
+
+The runner calls the existing `src.evaluator` (no second evaluator), needs no
+API key, and reports per-dimension accuracy with TP/FP/TN/FN confusion
+matrices, false positives, missed errors, and case-level pass/fail agreement.
+It records whether each score came from deterministic checks or the LLM judge.
+Results are saved to `benchmark/results.json` and `benchmark/REPORT.md`;
+benchmark tests live in `tests/test_benchmark.py`.
 
 ## How the evaluator works
 
