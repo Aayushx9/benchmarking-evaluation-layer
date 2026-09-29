@@ -1,0 +1,927 @@
+{
+  "benchmark_version": "1.0",
+  "generated_at": "2026-09-29T04:50:18.429289+00:00",
+  "detect_threshold": 0.9,
+  "evaluator_mode": "deterministic",
+  "llm_judge_available": false,
+  "summary": {
+    "n_cases": 8,
+    "n_dimensions": 5,
+    "n_dimension_comparisons": 40,
+    "per_dimension": {
+      "numerical_correctness": {
+        "tp": 2,
+        "fp": 0,
+        "tn": 6,
+        "fn": 0,
+        "total": 8,
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "detected_errors": 2,
+        "missed_errors": 0,
+        "false_positives": 0
+      },
+      "data_grounding": {
+        "tp": 2,
+        "fp": 0,
+        "tn": 6,
+        "fn": 0,
+        "total": 8,
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "detected_errors": 2,
+        "missed_errors": 0,
+        "false_positives": 0
+      },
+      "method_correctness": {
+        "tp": 2,
+        "fp": 0,
+        "tn": 6,
+        "fn": 0,
+        "total": 8,
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "detected_errors": 2,
+        "missed_errors": 0,
+        "false_positives": 0
+      },
+      "completeness": {
+        "tp": 1,
+        "fp": 0,
+        "tn": 7,
+        "fn": 0,
+        "total": 8,
+        "accuracy": 1.0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "detected_errors": 1,
+        "missed_errors": 0,
+        "false_positives": 0
+      },
+      "hallucination_free": {
+        "tp": 3,
+        "fp": 0,
+        "tn": 4,
+        "fn": 1,
+        "total": 8,
+        "accuracy": 0.875,
+        "precision": 1.0,
+        "recall": 0.75,
+        "detected_errors": 3,
+        "missed_errors": 1,
+        "false_positives": 0
+      }
+    },
+    "dimension_confusion": {
+      "tp": 10,
+      "fp": 0,
+      "tn": 29,
+      "fn": 1,
+      "accuracy": 0.975
+    },
+    "expected_range_agreement": {
+      "matches": 40,
+      "total": 40,
+      "rate": 1.0
+    },
+    "pass_level": {
+      "correct_verdicts": 4,
+      "total": 8,
+      "accuracy": 0.5,
+      "missed_failures": [
+        "case_C_wrong_method",
+        "case_D_incomplete_answer",
+        "case_E_hallucinated_column",
+        "case_F_unsupported_claim"
+      ],
+      "false_failures": [],
+      "fully_correct_cases": [
+        "case_A_correct_answer",
+        "case_B_incorrect_number",
+        "case_G_verbose_correct",
+        "case_H_multiple_errors"
+      ]
+    },
+    "score_sources": {
+      "deterministic": 40,
+      "deterministic+llm": 0
+    }
+  },
+  "cases": [
+    {
+      "case_id": "case_A_correct_answer",
+      "description": "Control case: a correct, fully grounded answer copied from an existing agent trace. No mutation applied.",
+      "question": "Which model has the highest average accuracy?",
+      "injected_error": "none",
+      "mutation": "None. Trace copied verbatim from source_trace (legacy-only duplicate keys omitted; all evaluator-contract keys present).",
+      "evaluator_scores": {
+        "numerical_correctness": 1.0,
+        "data_grounding": 1.0,
+        "method_correctness": 1.0,
+        "completeness": 1.0,
+        "hallucination_free": 1.0
+      },
+      "evaluator_overall_score": 1.0,
+      "evaluator_pass": true,
+      "expected_pass": true,
+      "verdict_correct": true,
+      "llm_judge_used": false,
+      "issues": [],
+      "explanations": {
+        "numerical_correctness": "All 4 answer number(s) and 3 evidence number(s) match the execution result.",
+        "data_grounding": "All code/answer references match the schema.",
+        "method_correctness": "Method 'top_1' fits the question (expected one of ['mean_by_group', 'top_1']).",
+        "completeness": "Answer names the winner 'gpt-4o-mini'.",
+        "hallucination_free": "No invented columns, values, or numbers detected."
+      },
+      "dimension_results": [
+        {
+          "dimension": "numerical_correctness",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "data_grounding",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "method_correctness",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "completeness",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "hallucination_free",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        }
+      ]
+    },
+    {
+      "case_id": "case_B_incorrect_number",
+      "description": "Incorrect numerical value: the winner's mean accuracy in final_answer was changed from 0.8367 to 0.9999.",
+      "question": "Which model has the highest average accuracy?",
+      "injected_error": "incorrect_numerical_value",
+      "mutation": "final_answer only: every occurrence of the true mean 0.8367 replaced with 0.9999. execution_result and numerical_evidence were left correct so the mismatch is detectable.",
+      "evaluator_scores": {
+        "numerical_correctness": 0.0,
+        "data_grounding": 1.0,
+        "method_correctness": 1.0,
+        "completeness": 1.0,
+        "hallucination_free": 0.5
+      },
+      "evaluator_overall_score": 0.7,
+      "evaluator_pass": false,
+      "expected_pass": false,
+      "verdict_correct": true,
+      "llm_judge_used": false,
+      "issues": [
+        {
+          "dimension": "numerical_correctness",
+          "message": "numerical_correctness: answer number 0.9999 not found in execution result"
+        },
+        {
+          "dimension": "numerical_correctness",
+          "message": "numerical_correctness: answer number 0.9999 not found in execution result"
+        },
+        {
+          "dimension": "hallucination_free",
+          "message": "hallucination_free: number: answer number 0.9999 not found in execution result"
+        },
+        {
+          "dimension": "hallucination_free",
+          "message": "hallucination_free: number: answer number 0.9999 not found in execution result"
+        }
+      ],
+      "explanations": {
+        "numerical_correctness": "2 answer number(s) and 0 evidence number(s) mismatch the execution result.",
+        "data_grounding": "All code/answer references match the schema.",
+        "method_correctness": "Method 'top_1' fits the question (expected one of ['mean_by_group', 'top_1']).",
+        "completeness": "Answer names the winner 'gpt-4o-mini'.",
+        "hallucination_free": "2 unsupported claim(s) detected."
+      },
+      "dimension_results": [
+        {
+          "dimension": "numerical_correctness",
+          "label": "incorrect",
+          "score": 0.0,
+          "expected_range": [
+            0.0,
+            0.1
+          ],
+          "within_expected_range": true,
+          "detected": true,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "data_grounding",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "method_correctness",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "completeness",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "hallucination_free",
+          "label": "incorrect",
+          "score": 0.5,
+          "expected_range": [
+            0.4,
+            0.6
+          ],
+          "within_expected_range": true,
+          "detected": true,
+          "detection_correct": true,
+          "source": "deterministic"
+        }
+      ]
+    },
+    {
+      "case_id": "case_C_wrong_method",
+      "description": "Incorrect analytical method: analysis_plan.analysis_type changed from 'difficulty' to 'count_by_group' for a 'most difficult' question.",
+      "question": "Which task appears to be the most difficult?",
+      "injected_error": "incorrect_analytical_method",
+      "mutation": "analysis_plan.analysis_type: 'difficulty' -> 'count_by_group'. Code, execution result, and answer left unchanged. This is the same protocol used by tests/test_evaluator.py::test_wrong_method_penalized.",
+      "evaluator_scores": {
+        "numerical_correctness": 1.0,
+        "data_grounding": 1.0,
+        "method_correctness": 0.4,
+        "completeness": 1.0,
+        "hallucination_free": 1.0
+      },
+      "evaluator_overall_score": 0.88,
+      "evaluator_pass": true,
+      "expected_pass": false,
+      "verdict_correct": false,
+      "llm_judge_used": false,
+      "issues": [
+        {
+          "dimension": "method_correctness",
+          "message": "method_correctness: expected one of ['difficulty'], got 'count_by_group'"
+        }
+      ],
+      "explanations": {
+        "numerical_correctness": "All 4 answer number(s) and 3 evidence number(s) match the execution result.",
+        "data_grounding": "All code/answer references match the schema.",
+        "method_correctness": "Method 'count_by_group' looks wrong for this question (expected one of ['difficulty']).",
+        "completeness": "Answer names the winner 'summarization'.",
+        "hallucination_free": "No invented columns, values, or numbers detected."
+      },
+      "dimension_results": [
+        {
+          "dimension": "numerical_correctness",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "data_grounding",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "method_correctness",
+          "label": "incorrect",
+          "score": 0.4,
+          "expected_range": [
+            0.3,
+            0.5
+          ],
+          "within_expected_range": true,
+          "detected": true,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "completeness",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "hallucination_free",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        }
+      ]
+    },
+    {
+      "case_id": "case_D_incomplete_answer",
+      "description": "Incomplete answer: the 'Full ranking: ...' clause was removed from final_answer so only the winner is named.",
+      "question": "Which model has the highest average accuracy?",
+      "injected_error": "incomplete_answer",
+      "mutation": "final_answer truncated to 'gpt-4o-mini has the highest average accuracy by model (0.8367).' The full ranking of all three models was deleted. Execution result and evidence were left unchanged.",
+      "evaluator_scores": {
+        "numerical_correctness": 1.0,
+        "data_grounding": 1.0,
+        "method_correctness": 1.0,
+        "completeness": 0.8,
+        "hallucination_free": 1.0
+      },
+      "evaluator_overall_score": 0.96,
+      "evaluator_pass": true,
+      "expected_pass": false,
+      "verdict_correct": false,
+      "llm_judge_used": false,
+      "issues": [],
+      "explanations": {
+        "numerical_correctness": "All 1 answer number(s) and 3 evidence number(s) match the execution result.",
+        "data_grounding": "All code/answer references match the schema.",
+        "method_correctness": "Method 'top_1' fits the question (expected one of ['mean_by_group', 'top_1']).",
+        "completeness": "Answer names the winner 'gpt-4o-mini' (only the winner named).",
+        "hallucination_free": "No invented columns, values, or numbers detected."
+      },
+      "dimension_results": [
+        {
+          "dimension": "numerical_correctness",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "data_grounding",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "method_correctness",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "completeness",
+          "label": "incorrect",
+          "score": 0.8,
+          "expected_range": [
+            0.7,
+            0.9
+          ],
+          "within_expected_range": true,
+          "detected": true,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "hallucination_free",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        }
+      ]
+    },
+    {
+      "case_id": "case_E_hallucinated_column",
+      "description": "Hallucinated/nonexistent column: generated_code and final_answer reference 'f1_score', which does not exist in the dataset schema.",
+      "question": "Which task appears to be the most difficult?",
+      "injected_error": "hallucinated_column",
+      "mutation": "generated_code: metric column 'accuracy' replaced with nonexistent 'f1_score'. final_answer: 'lowest average accuracy' replaced with 'lowest average f1_score'. Execution result and evidence were kept from the original correct run so the numbers themselves stay valid.",
+      "evaluator_scores": {
+        "numerical_correctness": 1.0,
+        "data_grounding": 0.0,
+        "method_correctness": 1.0,
+        "completeness": 1.0,
+        "hallucination_free": 0.5
+      },
+      "evaluator_overall_score": 0.7,
+      "evaluator_pass": true,
+      "expected_pass": false,
+      "verdict_correct": false,
+      "llm_judge_used": false,
+      "issues": [
+        {
+          "dimension": "data_grounding",
+          "message": "data_grounding: code references unknown column 'f1_score' (schema: ['model', 'task', 'accuracy', 'latency_ms', 'cost_per_1k'])"
+        },
+        {
+          "dimension": "data_grounding",
+          "message": "data_grounding: answer mentions unknown column-like token 'f1_score'"
+        },
+        {
+          "dimension": "hallucination_free",
+          "message": "hallucination_free: grounding: code references unknown column 'f1_score' (schema: ['model', 'task', 'accuracy', 'latency_ms', 'cost_per_1k'])"
+        },
+        {
+          "dimension": "hallucination_free",
+          "message": "hallucination_free: grounding: answer mentions unknown column-like token 'f1_score'"
+        }
+      ],
+      "explanations": {
+        "numerical_correctness": "All 4 answer number(s) and 3 evidence number(s) match the execution result.",
+        "data_grounding": "2 ungrounded reference(s) found.",
+        "method_correctness": "Method 'difficulty' fits the question (expected one of ['difficulty']).",
+        "completeness": "Answer names the winner 'summarization'.",
+        "hallucination_free": "2 unsupported claim(s) detected."
+      },
+      "dimension_results": [
+        {
+          "dimension": "numerical_correctness",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "data_grounding",
+          "label": "incorrect",
+          "score": 0.0,
+          "expected_range": [
+            0.0,
+            0.1
+          ],
+          "within_expected_range": true,
+          "detected": true,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "method_correctness",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "completeness",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "hallucination_free",
+          "label": "incorrect",
+          "score": 0.5,
+          "expected_range": [
+            0.4,
+            0.6
+          ],
+          "within_expected_range": true,
+          "detected": true,
+          "detection_correct": true,
+          "source": "deterministic"
+        }
+      ]
+    },
+    {
+      "case_id": "case_F_unsupported_claim",
+      "description": "Unsupported claim: a causal explanation was appended to a correct answer that no part of the data or execution supports.",
+      "question": "Which task appears to be the most difficult?",
+      "injected_error": "unsupported_claim",
+      "mutation": "final_answer only: appended 'This is because summarization tasks inherently require deeper understanding than other tasks, which explains the low scores.' This is a non-numeric causal claim with no support anywhere in the trace. All numbers, code, and plan were left correct.",
+      "evaluator_scores": {
+        "numerical_correctness": 1.0,
+        "data_grounding": 1.0,
+        "method_correctness": 1.0,
+        "completeness": 1.0,
+        "hallucination_free": 1.0
+      },
+      "evaluator_overall_score": 1.0,
+      "evaluator_pass": true,
+      "expected_pass": false,
+      "verdict_correct": false,
+      "llm_judge_used": false,
+      "issues": [],
+      "explanations": {
+        "numerical_correctness": "All 3 answer number(s) and 3 evidence number(s) match the execution result.",
+        "data_grounding": "All code/answer references match the schema.",
+        "method_correctness": "Method 'difficulty' fits the question (expected one of ['difficulty']).",
+        "completeness": "Answer names the winner 'summarization'.",
+        "hallucination_free": "No invented columns, values, or numbers detected."
+      },
+      "dimension_results": [
+        {
+          "dimension": "numerical_correctness",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "data_grounding",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "method_correctness",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "completeness",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "hallucination_free",
+          "label": "incorrect",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": false,
+          "source": "deterministic"
+        }
+      ]
+    },
+    {
+      "case_id": "case_G_verbose_correct",
+      "description": "Control case: a correct answer with unnecessary but harmless verbose wording. Every number and reference remains valid.",
+      "question": "Which model has the highest average accuracy?",
+      "injected_error": "unnecessary_wording",
+      "mutation": "final_answer only: prefixed with 'Based on a thorough analysis of the full dataset, I conclude that ...'. No numbers, columns, or claims were changed.",
+      "evaluator_scores": {
+        "numerical_correctness": 1.0,
+        "data_grounding": 1.0,
+        "method_correctness": 1.0,
+        "completeness": 1.0,
+        "hallucination_free": 1.0
+      },
+      "evaluator_overall_score": 1.0,
+      "evaluator_pass": true,
+      "expected_pass": true,
+      "verdict_correct": true,
+      "llm_judge_used": false,
+      "issues": [],
+      "explanations": {
+        "numerical_correctness": "All 4 answer number(s) and 3 evidence number(s) match the execution result.",
+        "data_grounding": "All code/answer references match the schema.",
+        "method_correctness": "Method 'top_1' fits the question (expected one of ['mean_by_group', 'top_1']).",
+        "completeness": "Answer names the winner 'gpt-4o-mini'.",
+        "hallucination_free": "No invented columns, values, or numbers detected."
+      },
+      "dimension_results": [
+        {
+          "dimension": "numerical_correctness",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "data_grounding",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "method_correctness",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "completeness",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "hallucination_free",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        }
+      ]
+    },
+    {
+      "case_id": "case_H_multiple_errors",
+      "description": "Multiple simultaneous errors: wrong method, hallucinated column, and wrong number in one trace.",
+      "question": "Which task appears to be the most difficult?",
+      "injected_error": "multiple_errors",
+      "mutation": "Three simultaneous edits: (1) analysis_plan.analysis_type 'difficulty' -> 'top_1' (wrong method); (2) generated_code metric column 'accuracy' -> nonexistent 'f1_score'; (3) final_answer asserts 0.9999 where the executed result is 0.7467. Evidence left unchanged.",
+      "evaluator_scores": {
+        "numerical_correctness": 0.5,
+        "data_grounding": 0.5,
+        "method_correctness": 0.4,
+        "completeness": 1.0,
+        "hallucination_free": 0.0
+      },
+      "evaluator_overall_score": 0.48,
+      "evaluator_pass": false,
+      "expected_pass": false,
+      "verdict_correct": true,
+      "llm_judge_used": false,
+      "issues": [
+        {
+          "dimension": "numerical_correctness",
+          "message": "numerical_correctness: answer number 0.9999 not found in execution result"
+        },
+        {
+          "dimension": "data_grounding",
+          "message": "data_grounding: code references unknown column 'f1_score' (schema: ['model', 'task', 'accuracy', 'latency_ms', 'cost_per_1k'])"
+        },
+        {
+          "dimension": "method_correctness",
+          "message": "method_correctness: expected one of ['difficulty'], got 'top_1'"
+        },
+        {
+          "dimension": "hallucination_free",
+          "message": "hallucination_free: grounding: code references unknown column 'f1_score' (schema: ['model', 'task', 'accuracy', 'latency_ms', 'cost_per_1k'])"
+        },
+        {
+          "dimension": "hallucination_free",
+          "message": "hallucination_free: number: answer number 0.9999 not found in execution result"
+        }
+      ],
+      "explanations": {
+        "numerical_correctness": "1 answer number(s) and 0 evidence number(s) mismatch the execution result.",
+        "data_grounding": "1 ungrounded reference(s) found.",
+        "method_correctness": "Method 'top_1' looks wrong for this question (expected one of ['difficulty']).",
+        "completeness": "Answer names the winner 'summarization'.",
+        "hallucination_free": "2 unsupported claim(s) detected."
+      },
+      "dimension_results": [
+        {
+          "dimension": "numerical_correctness",
+          "label": "incorrect",
+          "score": 0.5,
+          "expected_range": [
+            0.4,
+            0.6
+          ],
+          "within_expected_range": true,
+          "detected": true,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "data_grounding",
+          "label": "incorrect",
+          "score": 0.5,
+          "expected_range": [
+            0.4,
+            0.6
+          ],
+          "within_expected_range": true,
+          "detected": true,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "method_correctness",
+          "label": "incorrect",
+          "score": 0.4,
+          "expected_range": [
+            0.3,
+            0.5
+          ],
+          "within_expected_range": true,
+          "detected": true,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "completeness",
+          "label": "correct",
+          "score": 1.0,
+          "expected_range": [
+            0.9,
+            1.0
+          ],
+          "within_expected_range": true,
+          "detected": false,
+          "detection_correct": true,
+          "source": "deterministic"
+        },
+        {
+          "dimension": "hallucination_free",
+          "label": "incorrect",
+          "score": 0.0,
+          "expected_range": [
+            0.0,
+            0.1
+          ],
+          "within_expected_range": true,
+          "detected": true,
+          "detection_correct": true,
+          "source": "deterministic"
+        }
+      ]
+    }
+  ]
+}

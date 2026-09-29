@@ -1,0 +1,488 @@
+{
+  "benchmark_version": "1.0",
+  "created": "2026-09-28",
+  "research_question": "How might we tell whether the systems that judge AI agents are themselves any good?",
+  "dataset_reference": "data/sample_eval_results.csv",
+  "detect_threshold": 0.9,
+  "ground_truth_rule": "A dimension is labeled 'incorrect' when the injected error directly harms that dimension's quality. expected_pass is true only when every dimension in the case is labeled 'correct'. A dimension is 'detected' when the evaluator scores it below detect_threshold (0.9).",
+  "design_rule": "Every case except A starts from a known-correct existing agent trace (source_trace) and applies exactly one documented mutation (mutation field), except case H which applies three. No random mutations are used.",
+  "cases": [
+    {
+      "case_id": "case_A_correct_answer",
+      "description": "Control case: a correct, fully grounded answer copied from an existing agent trace. No mutation applied.",
+      "question": "Which model has the highest average accuracy?",
+      "dataset_reference": "data/sample_eval_results.csv",
+      "source_trace": "traces/trace_20260923T043041407326.json",
+      "injected_error": "none",
+      "mutation": "None. Trace copied verbatim from source_trace (legacy-only duplicate keys omitted; all evaluator-contract keys present).",
+      "expected_pass": true,
+      "ground_truth": {
+        "numerical_correctness": "correct",
+        "data_grounding": "correct",
+        "method_correctness": "correct",
+        "completeness": "correct",
+        "hallucination_free": "correct"
+      },
+      "expected_evaluator": {
+        "numerical_correctness": [0.9, 1.0],
+        "data_grounding": [0.9, 1.0],
+        "method_correctness": [0.9, 1.0],
+        "completeness": [0.9, 1.0],
+        "hallucination_free": [0.9, 1.0]
+      },
+      "expected_behavior_note": "All five dimensions should score >= 0.9 and the evaluator should PASS.",
+      "trace": {
+        "question": "Which model has the highest average accuracy?",
+        "dataset_schema": {
+          "n_rows": 18,
+          "n_cols": 5,
+          "columns": ["model", "task", "accuracy", "latency_ms", "cost_per_1k"],
+          "dtypes": {"model": "str", "task": "str", "accuracy": "float64", "latency_ms": "int64", "cost_per_1k": "float64"},
+          "null_counts": {"model": 0, "task": 0, "accuracy": 0, "latency_ms": 0, "cost_per_1k": 0},
+          "numeric_summary": {
+            "accuracy": {"mean": 0.793888888888889, "min": 0.68, "max": 0.9, "count": 18},
+            "latency_ms": {"mean": 337.5, "min": 175.0, "max": 510.0, "count": 18},
+            "cost_per_1k": {"mean": 0.15, "min": 0.05, "max": 0.25, "count": 18}
+          },
+          "categorical_values": {
+            "model": ["claude-3-haiku", "gpt-4o-mini", "llama-3-8b"],
+            "task": ["classification", "qa", "summarization"]
+          }
+        },
+        "reasoning": "Relevant columns: model, accuracy. The question asks for a ranking (highest average accuracy per model), so I will compute group means and sort.",
+        "analysis_plan": {
+          "reasoning": "Relevant columns: model, accuracy. The question asks for a ranking (highest average accuracy per model), so I will compute group means and sort.",
+          "analysis_type": "top_1",
+          "intent": "rank",
+          "relevant_columns": ["model", "accuracy"],
+          "group_col": "model",
+          "metric_col": "accuracy",
+          "direction": "top",
+          "steps": ["group_mean(model, accuracy)", "rank_descending"]
+        },
+        "generated_code": "result = df.groupby('model')['accuracy'].mean().round(4).sort_values(ascending=False).to_dict()",
+        "execution_result": {"gpt-4o-mini": 0.8367, "claude-3-haiku": 0.805, "llama-3-8b": 0.74},
+        "final_answer": "gpt-4o-mini has the highest average accuracy by model (0.8367). Full ranking: gpt-4o-mini: 0.8367; claude-3-haiku: 0.805; llama-3-8b: 0.74",
+        "numerical_evidence": {"gpt-4o-mini": 0.8367, "claude-3-haiku": 0.805, "llama-3-8b": 0.74},
+        "errors": null
+      }
+    },
+    {
+      "case_id": "case_B_incorrect_number",
+      "description": "Incorrect numerical value: the winner's mean accuracy in final_answer was changed from 0.8367 to 0.9999.",
+      "question": "Which model has the highest average accuracy?",
+      "dataset_reference": "data/sample_eval_results.csv",
+      "source_trace": "traces/trace_20260923T043041407326.json",
+      "injected_error": "incorrect_numerical_value",
+      "mutation": "final_answer only: every occurrence of the true mean 0.8367 replaced with 0.9999. execution_result and numerical_evidence were left correct so the mismatch is detectable.",
+      "expected_pass": false,
+      "ground_truth": {
+        "numerical_correctness": "incorrect",
+        "data_grounding": "correct",
+        "method_correctness": "correct",
+        "completeness": "correct",
+        "hallucination_free": "incorrect"
+      },
+      "expected_evaluator": {
+        "numerical_correctness": [0.0, 0.1],
+        "data_grounding": [0.9, 1.0],
+        "method_correctness": [0.9, 1.0],
+        "completeness": [0.9, 1.0],
+        "hallucination_free": [0.4, 0.6]
+      },
+      "expected_behavior_note": "The answer now asserts numbers the executed code never produced: numerical_correctness should collapse and hallucination_free should drop because the claim is unsupported by the execution result.",
+      "trace": {
+        "question": "Which model has the highest average accuracy?",
+        "dataset_schema": {
+          "n_rows": 18,
+          "n_cols": 5,
+          "columns": ["model", "task", "accuracy", "latency_ms", "cost_per_1k"],
+          "dtypes": {"model": "str", "task": "str", "accuracy": "float64", "latency_ms": "int64", "cost_per_1k": "float64"},
+          "null_counts": {"model": 0, "task": 0, "accuracy": 0, "latency_ms": 0, "cost_per_1k": 0},
+          "numeric_summary": {
+            "accuracy": {"mean": 0.793888888888889, "min": 0.68, "max": 0.9, "count": 18},
+            "latency_ms": {"mean": 337.5, "min": 175.0, "max": 510.0, "count": 18},
+            "cost_per_1k": {"mean": 0.15, "min": 0.05, "max": 0.25, "count": 18}
+          },
+          "categorical_values": {
+            "model": ["claude-3-haiku", "gpt-4o-mini", "llama-3-8b"],
+            "task": ["classification", "qa", "summarization"]
+          }
+        },
+        "reasoning": "Relevant columns: model, accuracy. The question asks for a ranking (highest average accuracy per model), so I will compute group means and sort.",
+        "analysis_plan": {
+          "reasoning": "Relevant columns: model, accuracy. The question asks for a ranking (highest average accuracy per model), so I will compute group means and sort.",
+          "analysis_type": "top_1",
+          "intent": "rank",
+          "relevant_columns": ["model", "accuracy"],
+          "group_col": "model",
+          "metric_col": "accuracy",
+          "direction": "top",
+          "steps": ["group_mean(model, accuracy)", "rank_descending"]
+        },
+        "generated_code": "result = df.groupby('model')['accuracy'].mean().round(4).sort_values(ascending=False).to_dict()",
+        "execution_result": {"gpt-4o-mini": 0.8367, "claude-3-haiku": 0.805, "llama-3-8b": 0.74},
+        "final_answer": "gpt-4o-mini has the highest average accuracy by model (0.9999). Full ranking: gpt-4o-mini: 0.9999; claude-3-haiku: 0.805; llama-3-8b: 0.74",
+        "numerical_evidence": {"gpt-4o-mini": 0.8367, "claude-3-haiku": 0.805, "llama-3-8b": 0.74},
+        "errors": null
+      }
+    },
+    {
+      "case_id": "case_C_wrong_method",
+      "description": "Incorrect analytical method: analysis_plan.analysis_type changed from 'difficulty' to 'count_by_group' for a 'most difficult' question.",
+      "question": "Which task appears to be the most difficult?",
+      "dataset_reference": "data/sample_eval_results.csv",
+      "source_trace": "traces/trace_20260923T043041730713.json",
+      "injected_error": "incorrect_analytical_method",
+      "mutation": "analysis_plan.analysis_type: 'difficulty' -> 'count_by_group'. Code, execution result, and answer left unchanged. This is the same protocol used by tests/test_evaluator.py::test_wrong_method_penalized.",
+      "expected_pass": false,
+      "ground_truth": {
+        "numerical_correctness": "correct",
+        "data_grounding": "correct",
+        "method_correctness": "incorrect",
+        "completeness": "correct",
+        "hallucination_free": "correct"
+      },
+      "expected_evaluator": {
+        "numerical_correctness": [0.9, 1.0],
+        "data_grounding": [0.9, 1.0],
+        "method_correctness": [0.3, 0.5],
+        "completeness": [0.9, 1.0],
+        "hallucination_free": [0.9, 1.0]
+      },
+      "expected_behavior_note": "Only method_correctness should fall: counting rows cannot answer which task is hardest, so the recorded method contradicts the question.",
+      "trace": {
+        "question": "Which task appears to be the most difficult?",
+        "dataset_schema": {
+          "n_rows": 18,
+          "n_cols": 5,
+          "columns": ["model", "task", "accuracy", "latency_ms", "cost_per_1k"],
+          "dtypes": {"model": "str", "task": "str", "accuracy": "float64", "latency_ms": "int64", "cost_per_1k": "float64"},
+          "null_counts": {"model": 0, "task": 0, "accuracy": 0, "latency_ms": 0, "cost_per_1k": 0},
+          "numeric_summary": {
+            "accuracy": {"mean": 0.793888888888889, "min": 0.68, "max": 0.9, "count": 18},
+            "latency_ms": {"mean": 337.5, "min": 175.0, "max": 510.0, "count": 18},
+            "cost_per_1k": {"mean": 0.15, "min": 0.05, "max": 0.25, "count": 18}
+          },
+          "categorical_values": {
+            "model": ["claude-3-haiku", "gpt-4o-mini", "llama-3-8b"],
+            "task": ["classification", "qa", "summarization"]
+          }
+        },
+        "reasoning": "Relevant columns: task, accuracy. 'Most difficult' means the task with the lowest average accuracy, so I will rank tasks by mean accuracy.",
+        "analysis_plan": {
+          "reasoning": "Relevant columns: task, accuracy. 'Most difficult' means the task with the lowest average accuracy, so I will rank tasks by mean accuracy.",
+          "analysis_type": "count_by_group",
+          "intent": "difficulty",
+          "relevant_columns": ["task", "accuracy"],
+          "group_col": "task",
+          "metric_col": "accuracy",
+          "steps": ["group_mean(task, accuracy)", "rank_ascending"]
+        },
+        "generated_code": "result = df.groupby('task')['accuracy'].mean().round(4).sort_values().to_dict()",
+        "execution_result": {"summarization": 0.7467, "qa": 0.7833, "classification": 0.8517},
+        "final_answer": "summarization appears most difficult (lowest average accuracy: 0.7467). Full ranking: summarization: 0.7467; qa: 0.7833; classification: 0.8517",
+        "numerical_evidence": {"summarization": 0.7467, "qa": 0.7833, "classification": 0.8517},
+        "errors": null
+      }
+    },
+    {
+      "case_id": "case_D_incomplete_answer",
+      "description": "Incomplete answer: the 'Full ranking: ...' clause was removed from final_answer so only the winner is named.",
+      "question": "Which model has the highest average accuracy?",
+      "dataset_reference": "data/sample_eval_results.csv",
+      "source_trace": "traces/trace_20260923T043041407326.json",
+      "injected_error": "incomplete_answer",
+      "mutation": "final_answer truncated to 'gpt-4o-mini has the highest average accuracy by model (0.8367).' The full ranking of all three models was deleted. Execution result and evidence were left unchanged.",
+      "expected_pass": false,
+      "ground_truth": {
+        "numerical_correctness": "correct",
+        "data_grounding": "correct",
+        "method_correctness": "correct",
+        "completeness": "incorrect",
+        "hallucination_free": "correct"
+      },
+      "expected_evaluator": {
+        "numerical_correctness": [0.9, 1.0],
+        "data_grounding": [0.9, 1.0],
+        "method_correctness": [0.9, 1.0],
+        "completeness": [0.7, 0.9],
+        "hallucination_free": [0.9, 1.0]
+      },
+      "expected_behavior_note": "The answer names only the winner of a three-group ranking, so completeness should drop below the 0.9 detection threshold while everything else stays clean.",
+      "trace": {
+        "question": "Which model has the highest average accuracy?",
+        "dataset_schema": {
+          "n_rows": 18,
+          "n_cols": 5,
+          "columns": ["model", "task", "accuracy", "latency_ms", "cost_per_1k"],
+          "dtypes": {"model": "str", "task": "str", "accuracy": "float64", "latency_ms": "int64", "cost_per_1k": "float64"},
+          "null_counts": {"model": 0, "task": 0, "accuracy": 0, "latency_ms": 0, "cost_per_1k": 0},
+          "numeric_summary": {
+            "accuracy": {"mean": 0.793888888888889, "min": 0.68, "max": 0.9, "count": 18},
+            "latency_ms": {"mean": 337.5, "min": 175.0, "max": 510.0, "count": 18},
+            "cost_per_1k": {"mean": 0.15, "min": 0.05, "max": 0.25, "count": 18}
+          },
+          "categorical_values": {
+            "model": ["claude-3-haiku", "gpt-4o-mini", "llama-3-8b"],
+            "task": ["classification", "qa", "summarization"]
+          }
+        },
+        "reasoning": "Relevant columns: model, accuracy. The question asks for a ranking (highest average accuracy per model), so I will compute group means and sort.",
+        "analysis_plan": {
+          "reasoning": "Relevant columns: model, accuracy. The question asks for a ranking (highest average accuracy per model), so I will compute group means and sort.",
+          "analysis_type": "top_1",
+          "intent": "rank",
+          "relevant_columns": ["model", "accuracy"],
+          "group_col": "model",
+          "metric_col": "accuracy",
+          "direction": "top",
+          "steps": ["group_mean(model, accuracy)", "rank_descending"]
+        },
+        "generated_code": "result = df.groupby('model')['accuracy'].mean().round(4).sort_values(ascending=False).to_dict()",
+        "execution_result": {"gpt-4o-mini": 0.8367, "claude-3-haiku": 0.805, "llama-3-8b": 0.74},
+        "final_answer": "gpt-4o-mini has the highest average accuracy by model (0.8367).",
+        "numerical_evidence": {"gpt-4o-mini": 0.8367, "claude-3-haiku": 0.805, "llama-3-8b": 0.74},
+        "errors": null
+      }
+    },
+    {
+      "case_id": "case_E_hallucinated_column",
+      "description": "Hallucinated/nonexistent column: generated_code and final_answer reference 'f1_score', which does not exist in the dataset schema.",
+      "question": "Which task appears to be the most difficult?",
+      "dataset_reference": "data/sample_eval_results.csv",
+      "source_trace": "traces/trace_20260923T043041730713.json",
+      "injected_error": "hallucinated_column",
+      "mutation": "generated_code: metric column 'accuracy' replaced with nonexistent 'f1_score'. final_answer: 'lowest average accuracy' replaced with 'lowest average f1_score'. Execution result and evidence were kept from the original correct run so the numbers themselves stay valid.",
+      "expected_pass": false,
+      "ground_truth": {
+        "numerical_correctness": "correct",
+        "data_grounding": "incorrect",
+        "method_correctness": "correct",
+        "completeness": "correct",
+        "hallucination_free": "incorrect"
+      },
+      "expected_evaluator": {
+        "numerical_correctness": [0.9, 1.0],
+        "data_grounding": [0.0, 0.1],
+        "method_correctness": [0.9, 1.0],
+        "completeness": [0.9, 1.0],
+        "hallucination_free": [0.4, 0.6]
+      },
+      "expected_behavior_note": "Neither the code nor the schema contains 'f1_score', so data_grounding should collapse and hallucination_free should drop because the claim is ungrounded.",
+      "trace": {
+        "question": "Which task appears to be the most difficult?",
+        "dataset_schema": {
+          "n_rows": 18,
+          "n_cols": 5,
+          "columns": ["model", "task", "accuracy", "latency_ms", "cost_per_1k"],
+          "dtypes": {"model": "str", "task": "str", "accuracy": "float64", "latency_ms": "int64", "cost_per_1k": "float64"},
+          "null_counts": {"model": 0, "task": 0, "accuracy": 0, "latency_ms": 0, "cost_per_1k": 0},
+          "numeric_summary": {
+            "accuracy": {"mean": 0.793888888888889, "min": 0.68, "max": 0.9, "count": 18},
+            "latency_ms": {"mean": 337.5, "min": 175.0, "max": 510.0, "count": 18},
+            "cost_per_1k": {"mean": 0.15, "min": 0.05, "max": 0.25, "count": 18}
+          },
+          "categorical_values": {
+            "model": ["claude-3-haiku", "gpt-4o-mini", "llama-3-8b"],
+            "task": ["classification", "qa", "summarization"]
+          }
+        },
+        "reasoning": "Relevant columns: task, f1_score. 'Most difficult' means the task with the lowest average f1_score, so I will rank tasks by mean f1_score.",
+        "analysis_plan": {
+          "reasoning": "Relevant columns: task, f1_score. 'Most difficult' means the task with the lowest average f1_score, so I will rank tasks by mean f1_score.",
+          "analysis_type": "difficulty",
+          "intent": "difficulty",
+          "relevant_columns": ["task", "f1_score"],
+          "group_col": "task",
+          "metric_col": "f1_score",
+          "steps": ["group_mean(task, f1_score)", "rank_ascending"]
+        },
+        "generated_code": "result = df.groupby('task')['f1_score'].mean().round(4).sort_values().to_dict()",
+        "execution_result": {"summarization": 0.7467, "qa": 0.7833, "classification": 0.8517},
+        "final_answer": "summarization appears most difficult (lowest average f1_score: 0.7467). Full ranking: summarization: 0.7467; qa: 0.7833; classification: 0.8517",
+        "numerical_evidence": {"summarization": 0.7467, "qa": 0.7833, "classification": 0.8517},
+        "errors": null
+      }
+    },
+    {
+      "case_id": "case_F_unsupported_claim",
+      "description": "Unsupported claim: a causal explanation was appended to a correct answer that no part of the data or execution supports.",
+      "question": "Which task appears to be the most difficult?",
+      "dataset_reference": "data/sample_eval_results.csv",
+      "source_trace": "traces/trace_20260923T043041730713.json",
+      "injected_error": "unsupported_claim",
+      "mutation": "final_answer only: appended 'This is because summarization tasks inherently require deeper understanding than other tasks, which explains the low scores.' This is a non-numeric causal claim with no support anywhere in the trace. All numbers, code, and plan were left correct.",
+      "expected_pass": false,
+      "ground_truth": {
+        "numerical_correctness": "correct",
+        "data_grounding": "correct",
+        "method_correctness": "correct",
+        "completeness": "correct",
+        "hallucination_free": "incorrect"
+      },
+      "expected_evaluator": {
+        "numerical_correctness": [0.9, 1.0],
+        "data_grounding": [0.9, 1.0],
+        "method_correctness": [0.9, 1.0],
+        "completeness": [0.9, 1.0],
+        "hallucination_free": [0.9, 1.0]
+      },
+      "expected_behavior_note": "KNOWN GAP: the deterministic hallucination check only verifies columns and numbers, so a non-numeric unsupported causal claim is expected to score >= 0.9 and be MISSED unless the optional LLM judge runs. Ground truth still labels hallucination_free incorrect because the claim is unsupported.",
+      "trace": {
+        "question": "Which task appears to be the most difficult?",
+        "dataset_schema": {
+          "n_rows": 18,
+          "n_cols": 5,
+          "columns": ["model", "task", "accuracy", "latency_ms", "cost_per_1k"],
+          "dtypes": {"model": "str", "task": "str", "accuracy": "float64", "latency_ms": "int64", "cost_per_1k": "float64"},
+          "null_counts": {"model": 0, "task": 0, "accuracy": 0, "latency_ms": 0, "cost_per_1k": 0},
+          "numeric_summary": {
+            "accuracy": {"mean": 0.793888888888889, "min": 0.68, "max": 0.9, "count": 18},
+            "latency_ms": {"mean": 337.5, "min": 175.0, "max": 510.0, "count": 18},
+            "cost_per_1k": {"mean": 0.15, "min": 0.05, "max": 0.25, "count": 18}
+          },
+          "categorical_values": {
+            "model": ["claude-3-haiku", "gpt-4o-mini", "llama-3-8b"],
+            "task": ["classification", "qa", "summarization"]
+          }
+        },
+        "reasoning": "Relevant columns: task, accuracy. 'Most difficult' means the task with the lowest average accuracy, so I will rank tasks by mean accuracy.",
+        "analysis_plan": {
+          "reasoning": "Relevant columns: task, accuracy. 'Most difficult' means the task with the lowest average accuracy, so I will rank tasks by mean accuracy.",
+          "analysis_type": "difficulty",
+          "intent": "difficulty",
+          "relevant_columns": ["task", "accuracy"],
+          "group_col": "task",
+          "metric_col": "accuracy",
+          "steps": ["group_mean(task, accuracy)", "rank_ascending"]
+        },
+        "generated_code": "result = df.groupby('task')['accuracy'].mean().round(4).sort_values().to_dict()",
+        "execution_result": {"summarization": 0.7467, "qa": 0.7833, "classification": 0.8517},
+        "final_answer": "summarization appears most difficult (lowest average accuracy: 0.7467). Full ranking: summarization: 0.7467; qa: 0.7833; classification: 0.8517. This is because summarization tasks inherently require deeper understanding than other tasks, which explains the low scores.",
+        "numerical_evidence": {"summarization": 0.7467, "qa": 0.7833, "classification": 0.8517},
+        "errors": null
+      }
+    },
+    {
+      "case_id": "case_G_verbose_correct",
+      "description": "Control case: a correct answer with unnecessary but harmless verbose wording. Every number and reference remains valid.",
+      "question": "Which model has the highest average accuracy?",
+      "dataset_reference": "data/sample_eval_results.csv",
+      "source_trace": "traces/trace_20260923T043041407326.json",
+      "injected_error": "unnecessary_wording",
+      "mutation": "final_answer only: prefixed with 'Based on a thorough analysis of the full dataset, I conclude that ...'. No numbers, columns, or claims were changed.",
+      "expected_pass": true,
+      "ground_truth": {
+        "numerical_correctness": "correct",
+        "data_grounding": "correct",
+        "method_correctness": "correct",
+        "completeness": "correct",
+        "hallucination_free": "correct"
+      },
+      "expected_evaluator": {
+        "numerical_correctness": [0.9, 1.0],
+        "data_grounding": [0.9, 1.0],
+        "method_correctness": [0.9, 1.0],
+        "completeness": [0.9, 1.0],
+        "hallucination_free": [0.9, 1.0]
+      },
+      "expected_behavior_note": "Filler wording must NOT be penalized: all dimensions should stay >= 0.9 and the case should PASS. Any flag here would be a false positive.",
+      "trace": {
+        "question": "Which model has the highest average accuracy?",
+        "dataset_schema": {
+          "n_rows": 18,
+          "n_cols": 5,
+          "columns": ["model", "task", "accuracy", "latency_ms", "cost_per_1k"],
+          "dtypes": {"model": "str", "task": "str", "accuracy": "float64", "latency_ms": "int64", "cost_per_1k": "float64"},
+          "null_counts": {"model": 0, "task": 0, "accuracy": 0, "latency_ms": 0, "cost_per_1k": 0},
+          "numeric_summary": {
+            "accuracy": {"mean": 0.793888888888889, "min": 0.68, "max": 0.9, "count": 18},
+            "latency_ms": {"mean": 337.5, "min": 175.0, "max": 510.0, "count": 18},
+            "cost_per_1k": {"mean": 0.15, "min": 0.05, "max": 0.25, "count": 18}
+          },
+          "categorical_values": {
+            "model": ["claude-3-haiku", "gpt-4o-mini", "llama-3-8b"],
+            "task": ["classification", "qa", "summarization"]
+          }
+        },
+        "reasoning": "Relevant columns: model, accuracy. The question asks for a ranking (highest average accuracy per model), so I will compute group means and sort.",
+        "analysis_plan": {
+          "reasoning": "Relevant columns: model, accuracy. The question asks for a ranking (highest average accuracy per model), so I will compute group means and sort.",
+          "analysis_type": "top_1",
+          "intent": "rank",
+          "relevant_columns": ["model", "accuracy"],
+          "group_col": "model",
+          "metric_col": "accuracy",
+          "direction": "top",
+          "steps": ["group_mean(model, accuracy)", "rank_descending"]
+        },
+        "generated_code": "result = df.groupby('model')['accuracy'].mean().round(4).sort_values(ascending=False).to_dict()",
+        "execution_result": {"gpt-4o-mini": 0.8367, "claude-3-haiku": 0.805, "llama-3-8b": 0.74},
+        "final_answer": "Based on a thorough analysis of the full dataset, I conclude that gpt-4o-mini has the highest average accuracy by model (0.8367). Full ranking: gpt-4o-mini: 0.8367; claude-3-haiku: 0.805; llama-3-8b: 0.74",
+        "numerical_evidence": {"gpt-4o-mini": 0.8367, "claude-3-haiku": 0.805, "llama-3-8b": 0.74},
+        "errors": null
+      }
+    },
+    {
+      "case_id": "case_H_multiple_errors",
+      "description": "Multiple simultaneous errors: wrong method, hallucinated column, and wrong number in one trace.",
+      "question": "Which task appears to be the most difficult?",
+      "dataset_reference": "data/sample_eval_results.csv",
+      "source_trace": "traces/trace_20260923T043041730713.json",
+      "injected_error": "multiple_errors",
+      "mutation": "Three simultaneous edits: (1) analysis_plan.analysis_type 'difficulty' -> 'top_1' (wrong method); (2) generated_code metric column 'accuracy' -> nonexistent 'f1_score'; (3) final_answer asserts 0.9999 where the executed result is 0.7467. Evidence left unchanged.",
+      "expected_pass": false,
+      "ground_truth": {
+        "numerical_correctness": "incorrect",
+        "data_grounding": "incorrect",
+        "method_correctness": "incorrect",
+        "completeness": "correct",
+        "hallucination_free": "incorrect"
+      },
+      "expected_evaluator": {
+        "numerical_correctness": [0.4, 0.6],
+        "data_grounding": [0.4, 0.6],
+        "method_correctness": [0.3, 0.5],
+        "completeness": [0.9, 1.0],
+        "hallucination_free": [0.0, 0.1]
+      },
+      "expected_behavior_note": "Four dimensions should be flagged at once (numerical, grounding, method, hallucination) while completeness stays clean because the answer still names the correct winner with a full ranking.",
+      "trace": {
+        "question": "Which task appears to be the most difficult?",
+        "dataset_schema": {
+          "n_rows": 18,
+          "n_cols": 5,
+          "columns": ["model", "task", "accuracy", "latency_ms", "cost_per_1k"],
+          "dtypes": {"model": "str", "task": "str", "accuracy": "float64", "latency_ms": "int64", "cost_per_1k": "float64"},
+          "null_counts": {"model": 0, "task": 0, "accuracy": 0, "latency_ms": 0, "cost_per_1k": 0},
+          "numeric_summary": {
+            "accuracy": {"mean": 0.793888888888889, "min": 0.68, "max": 0.9, "count": 18},
+            "latency_ms": {"mean": 337.5, "min": 175.0, "max": 510.0, "count": 18},
+            "cost_per_1k": {"mean": 0.15, "min": 0.05, "max": 0.25, "count": 18}
+          },
+          "categorical_values": {
+            "model": ["claude-3-haiku", "gpt-4o-mini", "llama-3-8b"],
+            "task": ["classification", "qa", "summarization"]
+          }
+        },
+        "reasoning": "Relevant columns: task, f1_score. The question asks for a ranking, so I will compute group means and sort.",
+        "analysis_plan": {
+          "reasoning": "Relevant columns: task, f1_score. The question asks for a ranking, so I will compute group means and sort.",
+          "analysis_type": "top_1",
+          "intent": "difficulty",
+          "relevant_columns": ["task", "f1_score"],
+          "group_col": "task",
+          "metric_col": "f1_score",
+          "direction": "bottom",
+          "steps": ["group_mean(task, f1_score)", "rank_ascending"]
+        },
+        "generated_code": "result = df.groupby('task')['f1_score'].mean().round(4).sort_values().to_dict()",
+        "execution_result": {"summarization": 0.7467, "qa": 0.7833, "classification": 0.8517},
+        "final_answer": "summarization appears most difficult (lowest average accuracy: 0.9999). Full ranking: summarization: 0.7467; qa: 0.7833; classification: 0.8517",
+        "numerical_evidence": {"summarization": 0.7467, "qa": 0.7833, "classification": 0.8517},
+        "errors": null
+      }
+    }
+  ]
+}
